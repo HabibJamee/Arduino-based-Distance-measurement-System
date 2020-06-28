@@ -1,0 +1,42 @@
+#include <NewPing.h>           
+#include <Adafruit_GFX.h>       
+#include <Adafruit_SSD1306.h>   
+ 
+#define OLED_Address 0x3C       
+Adafruit_SSD1306 oled(128,64);  
+ 
+#define NUM_OF_READINGS 10      
+                                
+                                
+ 
+#define TRIGGER_PIN  12         
+#define ECHO_PIN     11         
+ 
+NewPing sonar(TRIGGER_PIN, ECHO_PIN); 
+void setup() {
+  oled.begin(SSD1306_SWITCHCAPVCC, OLED_Address);     
+} 
+    
+long Distance;                  
+long ThisReading;               
+ 
+void loop() {
+  
+  Distance=0;
+  for(int i=0;i<NUM_OF_READINGS;i++)
+  {
+    delay(50);                     
+    ThisReading=sonar.ping_cm();
+    if(ThisReading>Distance)
+      Distance=ThisReading;
+  }
+  // Display result to display
+  oled.clearDisplay();
+  oled.setTextColor(WHITE);
+  oled.setTextSize(2);
+  oled.setCursor(0,0);
+  oled.print("Distance :");
+  oled.print(Distance);
+  oled.println("cm");
+  oled.display();
+}
